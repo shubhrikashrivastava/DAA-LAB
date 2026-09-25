@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n, e;
+    cin >> n >> e;
+
+    vector<vector<pair<int,int>>> g(n);
+
+    for (int i = 0; i < e; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        g[u].push_back({v, w});
+        g[v].push_back({u, w});
+    }
+
+    priority_queue<pair<int,int>,
+                   vector<pair<int,int>>,
+                   greater<pair<int,int>>> pq;
+
+    vector<bool> visited(n, false);
+    int cost = 0;
+
+    pq.push({0, 0});
+
+    cout << "MST Edges:\n";
+
+    while (!pq.empty()) {
+        auto [w, u] = pq.top();
+        pq.pop();
+
+        if (visited[u])
+            continue;
+
+        visited[u] = true;
+        cost += w;
+
+        if (u != 0)
+            cout << u << " (weight " << w << ")\n";
+
+        for (auto [v, wt] : g[u]) {
+            if (!visited[v])
+                pq.push({wt, v});
+        }
+    }
+
+    cout << "Total Cost = " << cost << endl;
+
+    return 0;
+}
