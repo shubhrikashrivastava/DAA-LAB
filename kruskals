@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Edge {
+    int u, v, w;
+};
+
+int find(vector<int>& p, int x) {
+    if (p[x] == x)
+        return x;
+    return p[x] = find(p, p[x]);
+}
+
+int main() {
+    int n, e;
+    cin >> n >> e;
+
+    vector<Edge> edges(e);
+
+    for (auto &x : edges)
+        cin >> x.u >> x.v >> x.w;
+
+    sort(edges.begin(), edges.end(),
+         [](Edge a, Edge b) {
+             return a.w < b.w;
+         });
+
+    vector<int> parent(n);
+    iota(parent.begin(), parent.end(), 0);
+
+    int cost = 0, count = 0;
+
+    cout << "MST Edges:\n";
+
+    for (auto [u, v, w] : edges) {
+        int a = find(parent, u);
+        int b = find(parent, v);
+
+        if (a != b) {
+            parent[a] = b;
+            cost += w;
+            count++;
+
+            cout << u << " - " << v
+                 << " (weight " << w << ")\n";
+
+            if (count == n - 1)
+                break;
+        }
+    }
+
+    cout << "Total Cost = " << cost << endl;
+
+    return 0;
+}
